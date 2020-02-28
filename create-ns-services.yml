@@ -1,0 +1,27 @@
+- hosts: localhost
+  tasks:
+    - name: 'Assert required vars'
+      assert:
+        that:
+          - cluster is defined
+          - deployment_name is defined
+          - nodePort is defined
+
+    - name: 'Set sds-test cluster_worker_nodes'
+      set_fact:
+        cluster_worker_nodes:
+          - skb-ap-ps63a.med.umich.edu
+          - skb-ap-ps64a.med.umich.edu
+          - skb-ap-ps65a.med.umich.edu
+      when: cluster == 'sds-test'
+
+    - name: 'Set sds-dev cluster_worker_nodes'
+      set_fact:
+        cluster_worker_nodes:
+          - skb-ap-ts73a.med.umich.edu
+      when: cluster == 'sds-dev'
+
+    - name: 'Creating these services on NS'
+      debug:
+        msg: "{{ item.split('.')[0] }}-{{ deployment_name }}-{{ nodePort }}"
+      loop: "{{ cluster_worker_nodes }}"

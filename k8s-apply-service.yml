@@ -1,0 +1,12 @@
+- hosts: localhost
+  tasks:
+    - name: 'Assert required vars'
+      assert:
+        that:
+          - deployment_name is defined
+
+    - name: "Create service {{ deployment_name }}-service"
+      k8s:
+        definition: "{{ lookup('template', 'service.yml.j2') }}"
+        kubeconfig: "{{ kubeconfig_location | default('~/.kube/config') }}"
+        state: present
