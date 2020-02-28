@@ -90,21 +90,21 @@ func onAdd(obj interface{}) {
     ansiblePlaybookConnectionOptions := &ansibler.AnsiblePlaybookConnectionOptions{
       Connection: "local",
     }
-  
+
     ansiblePlaybookOptions := &ansibler.AnsiblePlaybookOptions {
       Inventory: "127.0.0.1,",
     }
 
     ansiblePlaybookOptions.AddExtraVar("deployment_name", deploymentName)
     ansiblePlaybookOptions.AddExtraVar("nodePort", nodePort)
-    ansiblePlaybookOptions.AddExtraVar("cluster", "sds-test")
-  
+    ansiblePlaybookOptions.AddExtraVar("cluster", "sds-dev")
+
     playbook := &ansibler.AnsiblePlaybookCmd {
       Playbook: "create-ns-services.yml",
       ConnectionOptions: ansiblePlaybookConnectionOptions,
       Options: ansiblePlaybookOptions,
     }
-  
+
     err := playbook.Run()
     if err != nil {
       panic(err)

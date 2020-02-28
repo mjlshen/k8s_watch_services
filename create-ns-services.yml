@@ -7,18 +7,11 @@
           - deployment_name is defined
           - nodePort is defined
 
-    - name: 'Set sds-test cluster_worker_nodes'
-      set_fact:
-        cluster_worker_nodes:
-          - skb-ap-ps63a.med.umich.edu
-          - skb-ap-ps64a.med.umich.edu
-          - skb-ap-ps65a.med.umich.edu
-      when: cluster == 'sds-test'
-
     - name: 'Set sds-dev cluster_worker_nodes'
       set_fact:
         cluster_worker_nodes:
-          - skb-ap-ts73a.med.umich.edu
+          - skb-ap-ts1a.example.com
+          - skb-ap-ts2a.example.com
       when: cluster == 'sds-dev'
 
     - name: 'Creating these services on NS'
