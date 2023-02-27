@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -13,7 +14,8 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 
-	ansibler "github.com/apenella/go-ansible"
+	"github.com/apenella/go-ansible/pkg/options"
+	"github.com/apenella/go-ansible/pkg/playbook"
 )
 
 func onAdd(obj interface{}) {
@@ -43,11 +45,11 @@ func onAdd(obj interface{}) {
 	}
 
 	if nodePortSvc {
-		ansiblePlaybookConnectionOptions := &ansibler.AnsiblePlaybookConnectionOptions{
+		ansiblePlaybookConnectionOptions := &options.AnsibleConnectionOptions{
 			Connection: "local",
 		}
 
-		ansiblePlaybookOptions := &ansibler.AnsiblePlaybookOptions{
+		ansiblePlaybookOptions := &playbook.AnsiblePlaybookOptions{
 			Inventory: "127.0.0.1,",
 		}
 
@@ -55,18 +57,17 @@ func onAdd(obj interface{}) {
 		ansiblePlaybookOptions.AddExtraVar("nodePort", nodePort)
 		ansiblePlaybookOptions.AddExtraVar("cluster", "sds-dev")
 
-		playbook := &ansibler.AnsiblePlaybookCmd{
-			Playbook:          "create-ns-services.yml",
+		playbook := &playbook.AnsiblePlaybookCmd{
+			Playbooks:         []string{"create-ns-services.yml"},
 			ConnectionOptions: ansiblePlaybookConnectionOptions,
 			Options:           ansiblePlaybookOptions,
 		}
 
-		err := playbook.Run()
+		err := playbook.Run(context.TODO())
 		if err != nil {
 			panic(err)
 		}
 	}
-	// fmt.Println(deploymentName + "-" + strconv.FormatInt(int64(nodePort), 10))
 }
 
 func onDelete(obj interface{}) {
@@ -98,8 +99,6 @@ func main() {
 	if err != nil {
 		log.Panic(err.Error())
 	}
-
-	// getWorkerNodeNames(clientset)
 
 	factory := informers.NewSharedInformerFactory(clientset, 0)
 	svcInformer := factory.Core().V1().Services().Informer()
