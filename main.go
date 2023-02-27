@@ -6,59 +6,15 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	// "strconv"
-	// "strings"
 
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
-	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/informers"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
+	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/apenella/go-ansible"
+	ansibler "github.com/apenella/go-ansible"
 )
-
-// func getWorkerNodeNames(clientset *kubernetes.Clientset) []string {
-//   nodes, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
-//   if err != nil {
-//     log.Panic(err.Error())
-//   }
-
-//   var workerNodeNames []string
-
-//   for _, n := range nodes.Items {
-//     isWorker := true
-//     for key, _ := range n.GetLabels() {
-//       if key == "node-role.kubernetes.io/master" {
-//         fmt.Println("Found a master: ", n.GetName())
-//         isWorker = false
-//         break
-//       }
-//     }
-
-//     if isWorker {
-//       workerNodeNames = append(workerNodeNames, n.GetName())
-//     }
-//   }
-
-//   for _, w := range workerNodeNames {
-//     fmt.Println(w)
-//   }
-//   return workerNodeNames
-// }
-
-// NetScaler service names should be skb-ap-ts1a-{{ deployment_name }}-{{ nodePort }}
-// func createNetScalerServiceNames(deploymentName string, nodePort int32, workerNodes []string) []string {
-//   var s []string
-
-//   for _, n := range workerNodes {
-//     s = append(s,
-//          strings.Split(n, ".")[0] + deploymentName + strconv.FormatInt(int64(nodePort), 10))
-//   }
-
-//   return s
-// }
 
 func onAdd(obj interface{}) {
 	var (
